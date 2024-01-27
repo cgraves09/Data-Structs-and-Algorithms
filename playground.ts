@@ -1011,7 +1011,89 @@ class Graph<T> {
 
         delete this.adjacencyList[v];
     }
+    DFSRecursive(vertex: T) {
+        if (!vertex) return 
+        const result = [];
+        const visited = {};
+
+        const dfs = (v: string) => {
+            if (!v) return null;
+
+            visited[v] = true;
+            result.push(v);
+
+            for (const key in this.adjacencyList[v]) {
+                if (!visited[key]) {
+                    return dfs(key)
+                }
+            }
+        }
+
+        dfs(vertex as string)
+
+        return result;
+    }
+    DFSIterative(start: T) {
+        const result = []
+        const stack = [start];
+        const visited = {};
+
+        visited[start as string] = true;
+        let currentVertex;
+
+        while(stack.length) {
+            currentVertex = stack.pop();
+            result.push(currentVertex)
+
+            for (const item of this.adjacencyList[currentVertex]) {
+                if (!visited[item]) {
+                    visited[item] = true;
+                    stack.push(item)
+                }
+            }
+        }
+
+        return stack;
+    }
+    BFS(start: string) {
+        const visited = {};
+        visited[start] = true;
+        
+        const queue = [start];
+        const result = [];
+        let currentVertex;
+        while(queue.length) {
+            currentVertex = queue.shift();
+            result.push(currentVertex);
+            for (const item of this.adjacencyList[currentVertex]) {
+                if (!visited[item]) {
+                    visited[item] = true;
+                    queue.push(item);
+                }
+            }
+        }
+
+        return result;
+    }
 }
+
+const g = new Graph();
+
+g.addVertex('A');
+g.addVertex('B');
+g.addVertex('C');
+g.addVertex('D');
+g.addVertex('E');
+g.addVertex('F');
+
+g.addEdge('A', 'B');
+g.addEdge('A', 'C');
+g.addEdge('B', 'D');
+g.addEdge('C', 'E');
+g.addEdge('D', 'E');
+g.addEdge('D', 'F');
+g.addEdge('E', 'F');
+
 
 
 

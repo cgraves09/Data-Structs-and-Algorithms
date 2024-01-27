@@ -791,4 +791,101 @@ hashTable.set('test', 104654);
 hashTable.set('a', 104654);
 hashTable.set('a', 104658884);
 hashTable.set('c', 104654);
-console.log(hashTable.get('a'));
+var Graph = /** @class */ (function () {
+    function Graph() {
+        this.adjacencyList = {};
+    }
+    Graph.prototype.addVertex = function (vertex) {
+        if (this.adjacencyList[vertex])
+            return console.error('Existing vertex');
+        this.adjacencyList[vertex] = [];
+    };
+    Graph.prototype.addEdge = function (vertexOne, vertexTwo) {
+        this.adjacencyList[vertexOne].push(vertexTwo);
+        this.adjacencyList[vertexTwo].push(vertexOne);
+    };
+    Graph.prototype.removeEdge = function (v1, v2) {
+        this.adjacencyList[v1].filter(function (edge) { return edge !== v2; });
+        this.adjacencyList[v2].filter(function (edge) { return edge !== v1; });
+    };
+    Graph.prototype.removeVertex = function (v) {
+        for (var key in this.adjacencyList) {
+            this.removeEdge(v, this.adjacencyList[key]);
+        }
+        delete this.adjacencyList[v];
+    };
+    Graph.prototype.DFSRecursive = function (vertex) {
+        var _this = this;
+        if (!vertex)
+            return;
+        var result = [];
+        var visited = {};
+        var dfs = function (v) {
+            if (!v)
+                return null;
+            visited[v] = true;
+            result.push(v);
+            for (var key in _this.adjacencyList[v]) {
+                if (!visited[key]) {
+                    return dfs(key);
+                }
+            }
+        };
+        dfs(vertex);
+        return result;
+    };
+    Graph.prototype.DFSIterative = function (start) {
+        var result = [];
+        var stack = [start];
+        var visited = {};
+        visited[start] = true;
+        var currentVertex;
+        while (stack.length) {
+            currentVertex = stack.pop();
+            result.push(currentVertex);
+            for (var _i = 0, _a = this.adjacencyList[currentVertex]; _i < _a.length; _i++) {
+                var item = _a[_i];
+                if (!visited[item]) {
+                    visited[item] = true;
+                    stack.push(item);
+                }
+            }
+        }
+        return stack;
+    };
+    Graph.prototype.BFS = function (start) {
+        var visited = {};
+        visited[start] = true;
+        var queue = [start];
+        var result = [];
+        var currentVertex;
+        while (queue.length) {
+            currentVertex = queue.shift();
+            result.push(currentVertex);
+            for (var _i = 0, _a = this.adjacencyList[currentVertex]; _i < _a.length; _i++) {
+                var item = _a[_i];
+                if (!visited[item]) {
+                    visited[item] = true;
+                    queue.push(item);
+                }
+            }
+        }
+        return result;
+    };
+    return Graph;
+}());
+var g = new Graph();
+g.addVertex('A');
+g.addVertex('B');
+g.addVertex('C');
+g.addVertex('D');
+g.addVertex('E');
+g.addVertex('F');
+g.addEdge('A', 'B');
+g.addEdge('A', 'C');
+g.addEdge('B', 'D');
+g.addEdge('C', 'E');
+g.addEdge('D', 'E');
+g.addEdge('D', 'F');
+g.addEdge('E', 'F');
+console.log(g.BFS('A'));
